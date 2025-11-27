@@ -100,7 +100,7 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
         }}>
           <div style={{ flex: '1 1 500px' }}>
             <h2 style={{ color: '#333', marginBottom: '20px' }}>Visualización</h2>
-            <div style={{ display: 'inline-block', border: '3px solid #73ff22ff', borderRadius: '5px', overflow: 'hidden', backgroundColor: 'white' }}>
+            <div style={{ display: 'inline-block', border: '3px solid #000000ff', borderRadius: '5px', overflow: 'hidden', backgroundColor: 'white' }}>
               <svg width="500" height="500" style={{ display: 'block' }}>
                 <rect x="0" y="0" width="500" height="500" fill="white" />
                 
@@ -119,7 +119,7 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
                     cx={(point.x + 1) * 250}
                     cy={(1 - point.y) * 250}
                     r="2"
-                    fill={point.inside ? '#f44336' : '#9E9E9E'}
+                    fill={point.inside ? '#f44336' : '#e0ee1fff'}
                     opacity="0.6"
                   />
                 ))}
@@ -132,7 +132,7 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
                   <span>Dentro del círculo (x² + y² ≤ 1)</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '20px', height: '20px', backgroundColor: '#9E9E9E', borderRadius: '50%' }}></div>
+                  <div style={{ width: '20px', height: '20px', backgroundColor: '#e0ee1fff', borderRadius: '50%' }}></div>
                   <span>Fuera del círculo</span>
                 </div>
               </div>

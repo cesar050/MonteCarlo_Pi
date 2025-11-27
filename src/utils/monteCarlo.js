@@ -13,6 +13,19 @@ export const runMonteCarloSimulation = (n, seed) => {
   let insideCircle = 0;
   const points = [];
   
+  let maxPoints;
+  if (n <= 1000) {
+    maxPoints = n;
+  } else if (n <= 10000) {
+    maxPoints = 2000;
+  } else if (n <= 100000) {
+    maxPoints = 4000;
+  } else {
+    maxPoints = 6000;
+  }
+  
+  const samplingRate = Math.max(1, Math.floor(n / maxPoints));
+  
   for (let i = 0; i < n; i++) {
     const u = random() * 2 - 1;
     const v = random() * 2 - 1;
@@ -20,7 +33,7 @@ export const runMonteCarloSimulation = (n, seed) => {
     
     if (isInside) insideCircle++;
     
-    if (points.length < 2000 || n <= 10000) {
+    if (i % samplingRate === 0 && points.length < maxPoints) {
       points.push({ x: u, y: v, inside: isInside });
     }
   }
@@ -70,6 +83,19 @@ export const runAntitheticSimulation = (n, seed) => {
   
   const halfN = Math.floor(n / 2);
   
+  let maxPoints;
+  if (n <= 1000) {
+    maxPoints = halfN;
+  } else if (n <= 10000) {
+    maxPoints = 1000;
+  } else if (n <= 100000) {
+    maxPoints = 2000;
+  } else {
+    maxPoints = 3000;
+  }
+  
+  const samplingRate = Math.max(1, Math.floor(halfN / maxPoints));
+  
   for (let i = 0; i < halfN; i++) {
     const u = random() * 2 - 1;
     const v = random() * 2 - 1;
@@ -84,9 +110,11 @@ export const runAntitheticSimulation = (n, seed) => {
     sumPiHat += piEstimate;
     sumSquaredPiHat += piEstimate * piEstimate;
     
-    if (points.length < 1000) {
+    if (i % samplingRate === 0 && points.length < maxPoints * 2) {
       points.push({ x: u, y: v, inside: isInside1 });
-      points.push({ x: -u, y: -v, inside: isInside2 });
+      if (points.length < maxPoints * 2) {
+        points.push({ x: -u, y: -v, inside: isInside2 });
+      }
     }
   }
   
