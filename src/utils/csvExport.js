@@ -3,7 +3,7 @@ export const exportToCSV = (results) => {
   
   const rows = results.map(r => [
     r.n,
-    r.replica,
+    r.replica || 1,
     r.seed,
     r.piHat.toFixed(6),
     r.se.toFixed(6),
@@ -17,11 +17,11 @@ export const exportToCSV = (results) => {
     ...rows.map(row => row.join(','))
   ].join('\n');
   
-  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'monte_carlo_results.csv';
+  link.download = 'monte_carlo_resultados.csv';
   link.click();
   window.URL.revokeObjectURL(url);
 };
