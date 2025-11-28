@@ -47,7 +47,7 @@ random() = state / 2³²
 
 ---
 
-## 🚀 Instalación y Ejecución
+## Instalación y Ejecución
 ```bash
 # Clonar el repositorio
 git clone https://github.com/cesar050/MonteCarlo_Pi.git
