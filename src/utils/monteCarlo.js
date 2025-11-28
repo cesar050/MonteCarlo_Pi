@@ -63,13 +63,20 @@ export const runMultipleReplicas = (n, numReplicas = 5) => {
   const results = [];
   const baseSeeds = [12345, 67890, 11111, 22222, 33333];
   
+  // Ejecutar las réplicas
   for (let i = 0; i < numReplicas; i++) {
     const seed = baseSeeds[i];
     const result = runMonteCarloSimulation(n, seed);
     results.push({ ...result, replica: i + 1 });
   }
   
-  return results;
+  // Calcular varianza entre réplicas
+  const piHats = results.map(r => r.piHat);
+  const meanPiHat = piHats.reduce((sum, pi) => sum + pi, 0) / numReplicas;
+  const variance = piHats.reduce((sum, pi) => sum + Math.pow(pi - meanPiHat, 2), 0) / (numReplicas - 1);
+  
+  // Agregar varianza a cada resultado
+  return results.map(r => ({ ...r, variance }));
 };
 
 export const runAntitheticSimulation = (n, seed) => {
