@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { runMonteCarloSimulation, runMultipleReplicas, runAntitheticSimulation } from '../utils/monteCarlo';
+import { runMonteCarloSimulation, runMultipleReplicas, runAntitheticSimulation, runMultipleAntitheticReplicas } from '../utils/monteCarlo';
 
 const MonteCarloSimulation = ({ onResultsUpdate }) => {
   const [currentResult, setCurrentResult] = useState(null);
@@ -31,6 +31,16 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
       const result = runAntitheticSimulation(n, Date.now());
       setCurrentResult(result);
       onResultsUpdate(result, 'antithetic');
+      setIsSimulating(false);
+    }, 100);
+  };
+
+  const runWithAntitheticReplicas = (n) => {
+    setIsSimulating(true);
+    setTimeout(() => {
+      const results = runMultipleAntitheticReplicas(n, 5);
+      setCurrentResult(results[results.length - 1]);
+      onResultsUpdate(results, 'antitheticReplicas');
       setIsSimulating(false);
     }, 100);
   };
@@ -77,7 +87,7 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
         <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>Ejecuta 5 réplicas con semillas distintas: [12345, 67890, 11111, 22222, 33333]</p>
       </div>
 
-      <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', marginBottom: '30px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+      <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', marginBottom: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
         <h2 style={{ color: '#9C27B0', marginBottom: '15px' }}>Variables Antitéticas (1-U, 1-V)</h2>
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
           <button onClick={() => runWithAntithetics(1000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 1,000 (10³)</button>
@@ -86,6 +96,17 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
           <button onClick={() => runWithAntithetics(1000000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 1,000,000 (10⁶)</button>
         </div>
         <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>Para cada (U,V) genera (1-U, 1-V) para reducir varianza</p>
+      </div>
+
+      <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', marginBottom: '30px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+        <h2 style={{ color: '#673AB7', marginBottom: '15px' }}>Variables Antitéticas - 5 Réplicas</h2>
+        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+          <button onClick={() => runWithAntitheticReplicas(1000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 1,000 (10³)</button>
+          <button onClick={() => runWithAntitheticReplicas(10000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 10,000 (10⁴)</button>
+          <button onClick={() => runWithAntitheticReplicas(100000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 100,000 (10⁵)</button>
+          <button onClick={() => runWithAntitheticReplicas(1000000)} disabled={isSimulating} style={isSimulating ? buttonDisabledStyle : buttonStyle}>n = 1,000,000 (10⁶)</button>
+        </div>
+        <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>Ejecuta 5 réplicas con método antitético para comparar varianza con método normal</p>
       </div>
 
       {currentResult && (
@@ -161,7 +182,10 @@ const MonteCarloSimulation = ({ onResultsUpdate }) => {
               <p><strong>Puntos dentro:</strong> {currentResult.insideCircle.toLocaleString()} / {currentResult.totalPoints.toLocaleString()}</p>
               <p><strong>p̂ = proporción:</strong> {(currentResult.insideCircle / currentResult.totalPoints).toFixed(6)}</p>
               {currentResult.variance !== undefined && (
-                <p><strong>Varianza:</strong> {currentResult.variance.toFixed(8)}</p>
+                <p><strong>Varianza entre réplicas:</strong> <span style={{ color: '#FF9800', fontWeight: 'bold' }}>{currentResult.variance.toFixed(10)}</span></p>
+              )}
+              {currentResult.varianceInternal !== undefined && (
+                <p><strong>Varianza interna (método):</strong> {currentResult.varianceInternal.toFixed(8)}</p>
               )}
             </div>
           </div>

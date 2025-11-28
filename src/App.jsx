@@ -8,7 +8,7 @@ function App() {
   const [allResults, setAllResults] = useState([]);
 
   const handleResultsUpdate = (results, type) => {
-    if (type === 'replicas') {
+    if (type === 'replicas' || type === 'antitheticReplicas') {
       setAllResults(prev => [...prev, ...results]);
     } else {
       setAllResults(prev => [...prev, results]);
@@ -54,11 +54,11 @@ function App() {
                 🗑️ Limpiar Resultados
               </button>
             </div>
-            
+
             <div style={{ backgroundColor: 'white', margin: '20px 30px', borderRadius: '10px', padding: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
               <ResultsTable results={allResults} />
             </div>
-            
+
             <div style={{ backgroundColor: 'white', margin: '20px 30px', borderRadius: '10px', padding: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
               <Charts results={allResults} />
             </div>
